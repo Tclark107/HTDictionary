@@ -15,9 +15,9 @@ typedef struct DictionaryObj* Dictionary;
 // constructor for the Dictionary type
 Dictionary newDictionary(void);
 
-/*// freeDictionary()
+// freeDictionary()
 // destructor for the Dictionary type
-void freeDictionary(Dictionary* pD);
+//void freeDictionary(Dictionary* pD);
 
 // isEmpty()
 // returns 1 (true) if S is empty, 0 (false) otherwise
@@ -43,16 +43,17 @@ void insert(Dictionary D, char* k, char* v);
 // delete()
 // deletes pair with the key k
 // pre: lookup(D, k)!=NULL
-void delete(Dictionary D, char* k);
+/*void delete(Dictionary D, char* k);
 
 // makeEmpty()
 // re-sets D to the empty state.
 // pre: none
 void makeEmpty(Dictionary D);
+*/
 
 // printDictionary()
 // pre: none
 // prints a text representation of D to the file pointed to by out
 void printDictionary(FILE* out, Dictionary D);
-*/
+
 #endif
