@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 
 ADT     = Dictionary
-EXEBIN  = $(ADT)Client
+EXEBIN  = $(ADT)Test
 SOURCES = $(ADT).c $(EXEBIN).c
 OBJECTS = $(ADT).o $(EXEBIN).o
 HEADERS = $(ADT).h

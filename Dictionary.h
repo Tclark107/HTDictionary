@@ -15,7 +15,7 @@ typedef struct DictionaryObj* Dictionary;
 // constructor for the Dictionary type
 Dictionary newDictionary(void);
 
-// freeDictionary()
+/*// freeDictionary()
 // destructor for the Dictionary type
 void freeDictionary(Dictionary* pD);
 
@@ -54,5 +54,5 @@ void makeEmpty(Dictionary D);
 // pre: none
 // prints a text representation of D to the file pointed to by out
 void printDictionary(FILE* out, Dictionary D);
-
+*/
 #endif
