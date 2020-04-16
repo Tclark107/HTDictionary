@@ -1,0 +1,12 @@
+This is a project implementing a Dictionary using a Hash Table.
+
+I have thus far spent: 2 hours
+working on it.
+
+Dictionary.c
+HashTable implementation of a Dictionary
+
+Dictionary.h
+Headerfile for Dictionary.
+
+
