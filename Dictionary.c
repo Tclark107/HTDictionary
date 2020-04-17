@@ -75,15 +75,26 @@ Dictionary newDictionary(void) {
    return D;
 }
 
+// freeDictionary()
+// destructor for the Dictionary type
+void freeDictionary(Dictionary* pD) {
+   if(*pD != NULL && pD != NULL) {
+      if(!isEmpty(*pD)) makeEmpty(*pD);
+      //for(int i = 0; i < tableSize; i++) freeList(&pD->hashTable[i]);
+      free(*pD);
+      *pD = NULL;
+   }
+}
+
 // freeList() 
 // destructor for the List type
-/*void freeList(List* pL) {
+void freeList(List* pL) {
    if(*pL != NULL && pL != NULL) {
-      if(!isEmpty(*pL)) makeEmpty(*pL);
+      //if(!isListEmpty(*pL)) makeListEmpty(*pL);
       free(*pL);
       *pL = NULL;
    }
-}*/
+}
 
 //-----------------------------------------------------------------------------
 // private functions
@@ -111,7 +122,7 @@ unsigned int pre_hash(char* input) {
 }
 
 // hash()
-// turns a string into an int in the range 0 to m-1
+// turns a string into an int in the range 0 to m-1 
 int hash(char* key){
    return pre_hash(key)%tableSize;
 }
@@ -166,14 +177,14 @@ char* lookup(Dictionary D, char* k) {
 // pre: lookup(D, k)==NULL
 void insert(Dictionary D, char* k, char* v) {
    if(D==NULL) {
-      fprintf(stderr,"Dictionary Error: calling lookup() on NULL Dictionary reference\n");
+      fprintf(stderr,"Dictionary Error: calling insert() on NULL Dictionary reference\n");
       exit(EXIT_FAILURE);
    }
    if(lookup(D,k)==NULL){
       int slot = hash(k);
       Node N = NewNode(k,v);
       if(D->hashTable[slot]->numListItems > 0) {
-         N = D->hashTable[slot]->head;
+         N->next = D->hashTable[slot]->head;
          D->hashTable[slot]->head = N;
       } else {
          D->hashTable[slot]->head = N;
@@ -183,6 +194,68 @@ void insert(Dictionary D, char* k, char* v) {
    } else {
       printf("cannot insert duplicate keys\n");
    }
+}
+
+// delete()
+// deletes pair with the key k
+// pre: lookup(D, k)!=NULL
+void delete(Dictionary D, char* k) {
+   if(D==NULL) {
+      fprintf(stderr,"Dictionary Error: calling delete() on NULL Dictionary reference\n");
+      exit(EXIT_FAILURE);
+   }
+   if(lookup(D,k)!=NULL){
+      int slot = hash(k);
+      Node N, P;
+      P = NULL;
+
+      for(N = D->hashTable[slot]->head; N!=NULL;
+            P = N, N = N->next) {
+         if(N->key == k) {
+            if(P == NULL) {
+               D->hashTable[slot]->head = N->next;
+               break;
+            } else {
+               P->next = N->next;
+               break;
+            }
+         }
+      }    
+      freeNode(&N);
+      D->hashTable[slot]->numListItems--;
+      D->numHashItems--;
+   } else {
+      printf("cannot delete non-existent key\n");
+   }
+}
+
+// makeEmpty()
+// re-sets D to the empty state.
+// pre: none
+void makeEmpty(Dictionary D) {
+   if(D==NULL) {
+      fprintf(stderr,"Dictionary Error: calling makeEmpty() on Dictionary reference\n");
+      exit(EXIT_FAILURE);
+   }
+   if(D->numHashItems > 0) {
+      Node N;
+      for(int i = 0; i < tableSize; ++i) {
+         if(D->hashTable[i]->numListItems>0) {
+            while( D->hashTable[i]->numListItems>1 ) {
+               N = D->hashTable[i]->head;
+               D->hashTable[i]->head = D->hashTable[i]->head->next;
+               freeNode(&N);
+               D->hashTable[i]->numListItems--;
+            }
+            N = D->hashTable[i]->head;
+            D->hashTable[i]->head = NULL;
+            freeNode(&N);
+            D->hashTable[i]->numListItems--;
+         }
+         freeList(&D->hashTable[i]);
+      }
+   }
+   D->numHashItems = 0;
 }
 
 // printDictionary()
@@ -202,67 +275,3 @@ void printDictionary(FILE* out, Dictionary D) {
       }
    }
 }
-
-/*// delete()
-// deletes a pair with the key k
-// pre: lookup(D, k)!=NULL
-void delete(Dictionary D, char* k) {
-   if(D==NULL) {
-      fprintf(stderr,"Stack Error: calling insert() on NULL Stack reference\n");
-      exit(EXIT_FAILURE);
-   }
-   if(lookup(D,k)!=NULL){
-      Node P;
-      Node N;
-      P = D->head;
-      N = D->head->next; 
-      for(;N != NULL;N = N->next) {
-         if(P->key == k) {
-            D->head = P->next;
-            freeNode(&P);
-            break;
-         }
-         if(N->key == k) {
-            if(N == D->tail) {
-               D->tail = P;
-               P->next = NULL;
-               freeNode(&N);
-               break;
-            }
-            P->next = N->next;
-            freeNode(&N);
-            break;
-         }
-         P = P->next;
-      }
-      D->numItems--;
-   } else {
-      printf("cannot delete non-existent key\n");
-   }
-}
-
-// makeEmpty()
-// re-sets D to the empty state.
-// pre: none
-void makeEmpty(Dictionary D) {
-   if(D==NULL) {
-      fprintf(stderr,"Stack Error: calling insert() on NULL Stack reference\n");
-      exit(EXIT_FAILURE);
-   }
-   if(D->numItems > 0) {
-      Node N;
-      while(D->numItems > 1) {
-         N = D->head;
-         D->head = D->head->next;
-         freeNode(&N);
-         D->numItems--;
-      } 
-      N = D->head;
-      D->head = NULL;
-      D->tail = NULL;
-      freeNode(&N);
-      D->numItems--;
-   }
-}*/
-
-
